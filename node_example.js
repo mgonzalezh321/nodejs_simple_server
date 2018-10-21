@@ -1,13 +1,28 @@
 const http = require('http')
 const url = require('url')
-const math_ops = require('./math_operations')
-
+const adder = require('./add')
+const times = require('./times')
+const fibonacci = require('./fibonacci')
 var server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url, true)
+  switch (parsedUrl.pathname) {
+    case '/suma':
+      adder.add(parsedUrl.query, response)
+      break;
 
-  if(parsedUrl.pathname === '/suma') {
-    math_ops.add(parsedUrl.query, response)
+    case '/times':
+      times.times(parsedUrl.query, response)
+      break;
+
+    case '/fibonacci':
+      fibonacci.fibonacci(parsedUrl.query, response)
+      break;
+
+    default:
+      response.end(JSON.stringify({ message: "Invalid endpoint. Try again."}));
+      break;
   }
 })
 
-server.listen(8080)
+var port = 8080;
+server.listen(port, () => { console.log("Server listening in port " + String(port)) })
